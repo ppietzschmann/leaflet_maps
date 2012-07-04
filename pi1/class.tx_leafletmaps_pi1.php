@@ -78,18 +78,21 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	
 		
 		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] = '
-			<link rel="stylesheet" href="typo3conf/ext/leaflet_maps/dist/leaflet.css" />
+			<link rel="stylesheet" href="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.css" />
 			<!--[if lte IE 8]>
-			<link rel="stylesheet" href="typo3conf/ext/leaflet_maps/dist/leaflet.ie.css" />
+			<link rel="stylesheet" href="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.ie.css" />
 			<![endif]-->
 		';
 		
 		
-		$content = "
-		<div id=\"map\" style=\"height: 400px\"></div>
+		$content = "<div id=\"map\" style=\"height: 400px\"></div>";
+		
+		$content .= '<script src="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.js"></script>';
 
-	<script src=\"typo3conf/ext/leaflet_maps/dist/leaflet.js\"></script>
-	<script>
+	
+		$content .= "<script>";
+		
+		$content .= "
 		var map = new L.Map('map');
 
 		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/997/256/{z}/{x}/{y}.png',
@@ -99,15 +102,41 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		map.setView(new L.LatLng(51.505, -0.09), 13).addLayer(cloudmade);
 
 
-		// http://leaflet.cloudmade.com/examples/custom-icons.html
+		";
+		
+		$content .= $this->buildMarkers ();
+
+		$content .= $this->buildPolylines ();
+
+		$content .= $this->buildLayersControl ();
+		
+		$content .= $this->buildClickEvent ();
+		
+		$content .= "</script>";
+		
+		#$GLOBALS['TSFE']->additionalJavaScript[$this->extKey] = $js;
+	
+		return $this->pi_wrapInBaseClass($content);
+	}
+	
+	
+	function buildMarkers () {
+		
+		return "
+				// http://leaflet.cloudmade.com/examples/custom-icons.html
 		var markerLocation = new L.LatLng(51.5, -0.09),
 			marker = new L.Marker(markerLocation);
 
 		map.addLayer(marker);
 		marker.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();
-
-
-		// 
+		";
+		
+	}
+	
+	
+	function buildPolylines () {
+		
+		return "		// 
 		var circleLocation = new L.LatLng(51.508, -0.11),
 			circleOptions = {color: '#f03', opacity: 0.7},
 			circle = new L.Circle(circleLocation, 500, circleOptions);
@@ -123,8 +152,13 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 			polygon = new L.Polygon(polygonPoints);
 
 		polygon.bindPopup('I am a polygon.');
-		map.addLayer(polygon);
+		map.addLayer(polygon);";
+	}
 
+	
+	function buildLayersControl () {
+		
+		return "
 		// http://leaflet.cloudmade.com/examples/layers-control.html
 		var baseLayers = {
 			'CloudMade': cloudmade,
@@ -139,9 +173,13 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		layersControl = new L.Control.Layers(baseLayers, overlays);
 
 		map.addControl(layersControl);
+
+		";
 		
+	}
 
-
+	function buildClickEvent () {
+		return "
 		map.on('click', onMapClick);
 
 		var popup = new L.Popup();
@@ -152,13 +190,11 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 			popup.setLatLng(e.latlng);
 			popup.setContent('You clicked the map at ' + latlngStr);
 			map.openPopup(popup);
-		}
-	</script>	
-
-		";
-	
-		return $this->pi_wrapInBaseClass($content);
+		}";
+		
 	}
+	
+	
 }
 
 
