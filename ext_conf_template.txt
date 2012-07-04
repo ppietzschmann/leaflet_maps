@@ -1,0 +1,2 @@
+# cat=basic; type=string; label = CloudMade API-Key: Register for API-Key here: http://cloudmade.com/register
+api_key = BC9A493B41014CAABB98F0471D759707
