@@ -117,6 +117,8 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		$content .= "</script>";
 		
 		#$GLOBALS['TSFE']->additionalJavaScript[$this->extKey] = $js;
+		
+		$this->geocoding();
 	
 		return $this->pi_wrapInBaseClass($content);
 	}
@@ -208,6 +210,28 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	}
 	
 	
+	
+	/**
+	 * Geocoding using Nominatim from osm
+	 * 
+	 * @link http://wiki.openstreetmap.org/wiki/Nominatim Nominatim doc.
+	 */
+	function geocoding() {
+		
+		// test
+		$this->address = 'Seepark 5, 39116 Magdeburg';
+		
+		$uri = 'http://nominatim.openstreetmap.org/search?format=json&polygon=0&addressdetails=0&countrycodes=de&q='.  urlencode($this->address);
+		
+		$response = json_decode(t3lib_div::getURL($uri), TRUE);
+		
+		if(isset($response[0]['lat'])) {
+			$this->lat = $response[0]['lat'];
+			$this->lon = $response[0]['lon'];
+		
+			fb($this->lat.','.$this->lon,__LINE__.': $this->lat,$this->lon');
+		}
+	}
 
 }
 
