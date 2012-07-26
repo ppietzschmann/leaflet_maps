@@ -118,7 +118,7 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		
 		#$GLOBALS['TSFE']->additionalJavaScript[$this->extKey] = $js;
 		
-		$this->geocoding();
+
 	
 		return $this->pi_wrapInBaseClass($content);
 	}
