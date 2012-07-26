@@ -1,0 +1,12 @@
+plugin.leaflet_maps {
+
+	# cat=plugin.leaflet_maps: Basic; type=int+; label=List PID: The PID of the advertise list
+	listPID =
+
+	# cat=plugin.leaflet_maps: Basic; type=string; label=Email To: The Email to the Admin
+	toEmail = kontakt@praktischarzt.de
+
+	# cat=plugin.leaflet_maps/file; type=file[html,htm,tmpl,txt]; label= Template file: This is the HTML Template file, which be used for displaying records.
+    file.templateFile = EXT:leaflet_maps/res/leaflet_maps.html
+
+}

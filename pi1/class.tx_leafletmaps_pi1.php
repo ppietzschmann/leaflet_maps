@@ -43,6 +43,8 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	var $extKey        = 'leaflet_maps';	// The extension key.
 	var $pi_checkCHash = true;
 	
+	var $js = '';
+	
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -58,21 +60,14 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		//$this->pi_initPIflexForm();
 		
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-	/*
-		$content='
-			<strong>This is a few paragraphs:</strong><br />
-			<p>This is line 1</p>
-			<p>This is line 2</p>
-	
-			<h3>This is a form:</h3>
-			<form action="'.$this->pi_getPageLink($GLOBALS['TSFE']->id).'" method="POST">
-				<input type="text" name="'.$this->prefixId.'[input_field]" value="'.htmlspecialchars($this->piVars['input_field']).'">
-				<input type="submit" name="'.$this->prefixId.'[submit_button]" value="'.htmlspecialchars($this->pi_getLL('submit_button_label')).'">
-			</form>
-			<br />
-			<p>You can click here to '.$this->pi_linkToPage('get to this page again',$GLOBALS['TSFE']->id).'</p>
-		';
-		*/
+		
+		$this->conf['map']['uid'] = $this->cObj->data['uid'];
+		$this->conf['map']['div_id'] = 'map';
+		$this->conf['map']['center'] = '39.73, -104.99';
+		$this->conf['map']['zoom'] = '10';
+		$this->conf['map']['layers'] = null;
+		
+
 		
 		// http://leaflet.cloudmade.com/reference.html
 	
@@ -85,32 +80,39 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		';
 		
 		
-		$content = "<div id=\"map\" style=\"height: 400px\"></div>";
+		$content = sprintf('<div id="%s%d" %s></div>',
+				$this->conf['map']['div_id'],
+				$this->conf['map']['uid'],
+				$this->pi_classParam('map'));
+		
 		
 		$content .= '<script src="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.js"></script>';
-
 	
+		
 		$content .= "<script>";
 		
-		$content .= "
-		var map = new L.Map('map');
-
-		var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/997/256/{z}/{x}/{y}.png',
-			cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-			cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
-
-		map.setView(new L.LatLng(51.505, -0.09), 13).addLayer(cloudmade);
-
-
-		";
 		
-		$content .= $this->buildMarkers ();
-
-		$content .= $this->buildPolylines ();
-
-		$content .= $this->buildLayersControl ();
 		
-		$content .= $this->buildClickEvent ();
+		$content .= $this->buildLayerGroup();
+		
+		$content .= $this->buildLayersControl();
+		
+		$content .= $this->buildMap();
+		
+		
+		
+		
+		$content .= $this->js;
+		
+		
+		$content .= 'var overlayMaps = {
+							"Motorways": motorways,
+							"Cities": citiesLayer
+						};';
+		
+		// 
+		$content .= 'layersControl = new L.Control.Layers(baseMaps, overlayMaps);';
+		$content .= 'map.addControl(layersControl);';
 		
 		$content .= "</script>";
 		
@@ -120,82 +122,97 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	}
 	
 	
-	function buildMarkers () {
+	
+		/**
+	 * create a map
+	 * initialize the map on the "map" div with a given center and zoom
+	 * 
+	 * 
+	 * @see http://leaflet.cloudmade.com/reference.html#map-usage
+	 * 
+	 */
+	function buildMap() {
 		
-		return "
-				// http://leaflet.cloudmade.com/examples/custom-icons.html
-		var markerLocation = new L.LatLng(51.5, -0.09),
-			marker = new L.Marker(markerLocation);
-
-		map.addLayer(marker);
-		marker.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();
-		";
+		
+		$this->js .= sprintf("var map = new L.Map('%s%d', {
+							center: new L.LatLng(%s),
+							zoom: %d, 
+							layers: [minimal, citiesLayer]
+						});",
+				
+				$this->conf['map']['div_id'],
+				$this->conf['map']['uid'],
+				$this->conf['map']['center'],
+				$this->conf['map']['zoom'],
+				''
+				);
+		
+		
 		
 	}
 	
 	
-	function buildPolylines () {
+	/**
+	 * create a CloudMade tile layer
+	 * 
+	 * 
+	 */
+	function buildLayersControl() {
 		
-		return "		// 
-		var circleLocation = new L.LatLng(51.508, -0.11),
-			circleOptions = {color: '#f03', opacity: 0.7},
-			circle = new L.Circle(circleLocation, 500, circleOptions);
-
-		circle.bindPopup('I am a circle.');
-		map.addLayer(circle);
-
-
-		var p1 = new L.LatLng(51.509, -0.08),
-			p2 = new L.LatLng(51.503, -0.06),
-			p3 = new L.LatLng(51.51, -0.047),
-			polygonPoints = [p1, p2, p3],
-			polygon = new L.Polygon(polygonPoints);
-
-		polygon.bindPopup('I am a polygon.');
-		map.addLayer(polygon);";
-	}
-
-	
-	function buildLayersControl () {
+			// Cloudmade Layer		
+		$this->js .= "var cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+						cloudmadeOptions = {maxZoom: 18, attribution: cloudmadeAttribution},
+						cloudmadeUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/{styleId}/256/{z}/{x}/{y}.png';";
 		
-		return "
-		// http://leaflet.cloudmade.com/examples/layers-control.html
-		var baseLayers = {
-			'CloudMade': cloudmade,
-			//'OpenStreetMap': osm
-		};
-
-		var overlays = {
-			'Marker': marker,
-			//'Roads': roadsLayer
-		};
-
-		layersControl = new L.Control.Layers(baseLayers, overlays);
-
-		map.addControl(layersControl);
-
-		";
+		$this->js .= "var minimal = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 22677}),
+						midnightCommander = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 999}),
+						motorways = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 46561});";
 		
-	}
-
-	function buildClickEvent () {
-		return "
-		map.on('click', onMapClick);
-
-		var popup = new L.Popup();
-
-		function onMapClick(e) {
-			var latlngStr = '(' + e.latlng.lat.toFixed(3) + ', ' + e.latlng.lng.toFixed(3) + ')';
-
-			popup.setLatLng(e.latlng);
-			popup.setContent('You clicked the map at ' + latlngStr);
-			map.openPopup(popup);
-		}";
+		$this->js .= 'var baseMaps = {
+							"Minimal": minimal,
+							"Night View": midnightCommander
+						};';
+		
+		
+		// @todo: more layers
+		
 		
 	}
 	
 	
+	
+	function buildLayerGroup() {
+		
+		$markers=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_leafletmaps_markers','1=1 '.$this->cObj->enableFields('tx_leafletmaps_markers'));
+		
+		foreach ($markers as $key => $value) {
+			fb($value,__LINE__.': $value');
+			
+			
+			
+		}
+		
+		$this->js .= 'var littletonMarker = new L.Marker(new L.LatLng(39.61, -105.02)).bindPopup("This is Littleton, CO."),
+							denverMarker = new L.Marker(new L.LatLng(39.74, -104.99)).bindPopup("This is Denver, CO."),
+							auroraMarker = new L.Marker(new L.LatLng(39.73, -104.8)).bindPopup("This is Aurora, CO."),
+							goldenMarker = new L.Marker(new L.LatLng(39.77, -105.23)).bindPopup("This is Golden, CO.");
+
+						var citiesLayer = new L.LayerGroup();
+
+						citiesLayer.addLayer(littletonMarker);
+						citiesLayer.addLayer(denverMarker);
+						citiesLayer.addLayer(auroraMarker);
+						citiesLayer.addLayer(goldenMarker);';
+		
+		
+	}
+	
+	
+
 }
+
+
+
 
 
 

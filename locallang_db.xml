@@ -11,6 +11,46 @@
 			<label index="tx_leafletmaps_markers.latitude">latitude</label>
 			<label index="tx_leafletmaps_markers.popuptext">popuptext</label>
 			<label index="tt_content.list_type_pi1">Show leaflet map</label>
+			
+			<label index="tx_leafletmaps_pi1.flexform.map">Map</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.title">Title* (without space character, special character!)</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.tooltip">Tooltip-Title</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.class">Class</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.width">Width in pixels*</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.height">Height in pixels*</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.zoom">Zoom</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.address">Address*</label>
+			<label index="tx_leafletmaps_pi1.flexform.display">Display</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.route">Show Route (only 2 addresses, ignore the following options)</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.calc">Calc Route (only 1 address, display an textinput for enter a startingpoint)</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.scroll">Scroll Zoom</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.drag">Draggable Map</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.doubleclick">Doubleclick Zoom (Draggable Map has to be enabled.)</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.default">Type of Map on the beginning</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.default.0">Map</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.default.1">Satellite</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.default.2">Hybrid</label>
+			<label index="tx_leafletmaps_pi1.flexform.display.default.3">Styled (Only if styled Map is defined!)</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls">Controls</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.pancontrol">Show pan control</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.scalecontrol">Show scale control</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.streetviewcontrol">Show Streetview control</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.zoombar">Show zoom control</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.zoombar_type">Type of zoom control (show has to be enabled.)</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.zoombar_type.1">Default (According to Map Size)</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.zoombar_type.2">Small (Only 2 Zoom Buttons)</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.zoombar_type.3">Large (Zoom-Scale and Buttons)</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch">Show Map Type Control</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch.types">Map Types</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch.types.0">Map</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch.types.1">Satellite</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch.types.2">Hybrid</label>
+			<label index="tx_leafletmaps_pi1.flexform.controls.switch.types.3">Styled</label>
+			<label index="tx_leafletmaps_pi1.flexform.styled">Styled Map</label>
+			<label index="tx_leafletmaps_pi1.flexform.styled.name">Name of the styled Map-Type</label>
+			<label index="tx_leafletmaps_pi1.flexform.styled.code">Code (e.g. from http://gmaps-samples-v3.googlecode.com/svn/trunk/styledmaps/wizard/index.html)</label>
+			
+			
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tx_leafletmaps_markers.longitude">longitude</label>

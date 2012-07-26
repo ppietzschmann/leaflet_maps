@@ -1,0 +1,19 @@
+plugin.tx_leafletmaps_pi1 = USER
+[globalVar = GP:submit = 1] OR [globalVar = GP:no_cache = 1]
+plugin.tx_leafletmaps_pi1 = USER_INT
+[global]
+plugin.tx_leafletmaps_pi1 {
+
+
+    #templateFile = {$plugin.leaflet_maps.file.templateFile}
+
+
+  
+	_CSS_DEFAULT_STYLE (
+		.tx-leafletmaps-pi1-map {
+			width: 100%;
+			height: 400px;
+		}
+	)
+}
+
