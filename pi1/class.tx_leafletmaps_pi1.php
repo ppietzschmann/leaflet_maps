@@ -44,6 +44,8 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	var $pi_checkCHash = true;
 	
 	var $js = '';
+	var $flexValues = array();
+	
 	
 	/**
 	 * The main method of the PlugIn
@@ -57,14 +59,21 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
 		
-		//$this->pi_initPIflexForm();
+		$this->pi_initPIflexForm();
+
+        $this->flexValues['selectKey'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'field_code','sDEF');
+		
+        $this->flexValues['zoom'] = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'zoom','sMAP');
 		
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
 		
+		
+		#fb($this->cObj->data['pi_flexform'],'$this->cObj->data[pi_flexform]');
+		
 		$this->conf['map']['uid'] = $this->cObj->data['uid'];
-		$this->conf['map']['div_id'] = 'map';
-		$this->conf['map']['center'] = '39.73, -104.99';
-		$this->conf['map']['zoom'] = '10';
+		$this->conf['map']['div_id'] = $this->conf['div_id'];
+		$this->conf['map']['center'] = $this->flexValues['center'] ? $this->flexValues['center'] : $this->conf['center'];
+		$this->conf['map']['zoom'] = $this->flexValues['zoom']>0 ? $this->flexValues['zoom'] : $this->conf['zoom'];
 		$this->conf['map']['layers'] = null;
 		
 

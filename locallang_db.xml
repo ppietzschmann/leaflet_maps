@@ -15,7 +15,7 @@
 			<label index="tx_leafletmaps_pi1.flexform.map">Map</label>
 			<label index="tx_leafletmaps_pi1.flexform.map.title">Title* (without space character, special character!)</label>
 			<label index="tx_leafletmaps_pi1.flexform.map.tooltip">Tooltip-Title</label>
-			<label index="tx_leafletmaps_pi1.flexform.map.class">Class</label>
+			<label index="tx_leafletmaps_pi1.flexform.map.center">Center (LatLng)</label>
 			<label index="tx_leafletmaps_pi1.flexform.map.width">Width in pixels*</label>
 			<label index="tx_leafletmaps_pi1.flexform.map.height">Height in pixels*</label>
 			<label index="tx_leafletmaps_pi1.flexform.map.zoom">Zoom</label>

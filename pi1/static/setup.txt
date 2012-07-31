@@ -7,7 +7,9 @@ plugin.tx_leafletmaps_pi1 {
 
     #templateFile = {$plugin.leaflet_maps.file.templateFile}
 
-
+	zoom = 10
+	center = 39.73, -104.99
+	div_id = map
   
 	_CSS_DEFAULT_STYLE (
 		.tx-leafletmaps-pi1-map {

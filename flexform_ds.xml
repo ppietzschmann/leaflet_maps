@@ -4,7 +4,7 @@
     <langDisable>1</langDisable>
   </meta>           
   <sheets> 
-  	<sKARTE>       
+  	<sMAP>       
   	  <ROOT>                   
         <TCEforms>
           <sheetTitle>LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_pi1.flexform.map</sheetTitle>
@@ -17,7 +17,7 @@
             <config>
               <type>input</type>
               <size>50</size>
-              <eval>required</eval>
+              <!--<eval>required</eval>-->
             </config>
             </TCEforms>
           </map_title>
@@ -30,15 +30,15 @@
             </config>
             </TCEforms>
           </map_tooltip>  
-          <map_class>     
+          <center>     
             <TCEforms>
-            <label>LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_pi1.flexform.map.class</label>
+            <label>LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_pi1.flexform.map.center</label>
             <config>
               <type>input</type>
-              <size>50</size>
+              <size>10</size>
             </config>
             </TCEforms>
-          </map_class>   
+          </center>   
           <zoom>     
             <TCEforms>
             <label>LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_pi1.flexform.map.zoom</label>
@@ -64,7 +64,7 @@
           </adressen>      
         </el>        
     </ROOT>    
-    </sKARTE>    
+    </sMAP>    
     <sDEF>        
       <ROOT>      
         <TCEforms>
