@@ -87,45 +87,35 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		
 		
 		$content .= '<script src="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.js"></script>';
+		//$content .= '<script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>';
 	
 		
-		$content .= "<script>";
+		$this->buildLayerGroup();
+		$this->buildLayersControl();
 		
-		
-		
-		$content .= $this->buildLayerGroup();
-		
-		$content .= $this->buildLayersControl();
-		
-		$content .= $this->buildMap();
-		
-		
-		
-		
-		$content .= $this->js;
-		
-		
-		$content .= 'var overlayMaps = {
-							"Motorways": motorways,
-							"Cities": citiesLayer
-						};';
-		
-		// 
-		$content .= 'layersControl = new L.Control.Layers(baseMaps, overlayMaps);';
-		$content .= 'map.addControl(layersControl);';
-		
-		$content .= "</script>";
+		$content .= $this->addJavaScript();
 		
 		#$GLOBALS['TSFE']->additionalJavaScript[$this->extKey] = $js;
-		
 
-	
 		return $this->pi_wrapInBaseClass($content);
 	}
 	
+	/**
+	 * 
+	 * @return string
+	 */
+	function addJavaScript() {
+		return '<script type="text/javascript">
+			/*<![CDATA[*/
+		<!--
+		'.$this->js.'
+		// -->
+			/*]]>*/
+		</script>';
+	}
 	
 	
-		/**
+	/**
 	 * create a map
 	 * initialize the map on the "map" div with a given center and zoom
 	 * 
@@ -135,21 +125,19 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	 */
 	function buildMap() {
 		
-		
-		$this->js .= sprintf("var map = new L.Map('%s%d', {
-							center: new L.LatLng(%s),
-							zoom: %d, 
-							layers: [minimal, citiesLayer]
-						});",
+		$this->js .= sprintf("
+							var map = L.map('%s%d', {
+								center: [%s],
+								zoom: %d,
+								layers: [minimal, motorways, cities]
+							});
+							",
 				
 				$this->conf['map']['div_id'],
 				$this->conf['map']['uid'],
 				$this->conf['map']['center'],
-				$this->conf['map']['zoom'],
-				''
+				$this->conf['map']['zoom']
 				);
-		
-		
 		
 	}
 	
@@ -161,24 +149,39 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	 */
 	function buildLayersControl() {
 		
-			// Cloudmade Layer		
-		$this->js .= "var cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-						cloudmadeOptions = {maxZoom: 18, attribution: cloudmadeAttribution},
-						cloudmadeUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/{styleId}/256/{z}/{x}/{y}.png';";
+			// Cloudmade Layer
+		$this->js .= "
+					var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+						cmUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/{styleId}/256/{z}/{x}/{y}.png';
+					";
 		
-		$this->js .= "var minimal = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 22677}),
-						midnightCommander = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 999}),
-						motorways = new L.TileLayer(cloudmadeUrl, cloudmadeOptions, {styleId: 46561});";
 		
-		$this->js .= 'var baseMaps = {
+		$this->js .= "
+					var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
+						midnight  = L.tileLayer(cmUrl, {styleId: 999,   attribution: cmAttr}),
+						motorways = L.tileLayer(cmUrl, {styleId: 46561, attribution: cmAttr});
+					";
+		
+		$this->js .= $this->buildMap();
+		
+		$this->js .= '
+					var baseMaps = {
 							"Minimal": minimal,
-							"Night View": midnightCommander
-						};';
+							"Night View": midnight
+						};
+
+					var overlayMaps = {
+							"Motorways": motorways,
+							"Cities": cities
+						};
+					';
+		
+		$this->js .= '
+					L.control.layers(baseMaps, overlayMaps).addTo(map);
+					';
 		
 		
 		// @todo: more layers
-		
-		
 	}
 	
 	
@@ -194,20 +197,25 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 			
 		}
 		
-		$this->js .= 'var littletonMarker = new L.Marker(new L.LatLng(39.61, -105.02)).bindPopup("This is Littleton, CO."),
-							denverMarker = new L.Marker(new L.LatLng(39.74, -104.99)).bindPopup("This is Denver, CO."),
-							auroraMarker = new L.Marker(new L.LatLng(39.73, -104.8)).bindPopup("This is Aurora, CO."),
-							goldenMarker = new L.Marker(new L.LatLng(39.77, -105.23)).bindPopup("This is Golden, CO.");
+		$this->js .= "
+					var cities = new L.LayerGroup();
 
-						var citiesLayer = new L.LayerGroup();
-
-						citiesLayer.addLayer(littletonMarker);
-						citiesLayer.addLayer(denverMarker);
-						citiesLayer.addLayer(auroraMarker);
-						citiesLayer.addLayer(goldenMarker);';
-		
-		
+						L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities),
+						L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.').addTo(cities),
+						L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.').addTo(cities),
+						L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.').addTo(cities);
+					";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
