@@ -80,7 +80,7 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		
 		// http://leaflet.cloudmade.com/reference.html
 	
-		
+		// @todo: $this->extConf[addCss]
 		$GLOBALS['TSFE']->additionalHeaderData[$this->prefixId] = '
 			<link rel="stylesheet" href="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.css" />
 			<!--[if lte IE 8]>
@@ -178,7 +178,11 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 							"Minimal": minimal,
 							"Night View": midnight
 						};
+					';
 
+
+		$this->js .= '
+			
 					var overlayMaps = {
 							"Motorways": motorways,
 							"Cities": cities

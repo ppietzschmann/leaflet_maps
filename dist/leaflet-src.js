@@ -21,7 +21,7 @@ if (typeof exports !== undefined + '') {
 	window.L = L;
 }
 
-L.version = '0.4.1';
+L.version = '0.4.2';
 
 
 /*
@@ -1335,7 +1335,7 @@ L.Map = L.Class.extend({
 		return this._layers.hasOwnProperty(id);
 	},
 
-	invalidateSize: function (animate) {
+	invalidateSize: function () {
 		var oldSize = this.getSize();
 
 		this._sizeChanged = true;
@@ -1347,16 +1347,13 @@ L.Map = L.Class.extend({
 		if (!this._loaded) { return this; }
 
 		var offset = oldSize.subtract(this.getSize()).divideBy(2, true);
-		if (animate) {
-			this.panBy(offset);
-		} else {
-			this._rawPanBy(offset);
+		this._rawPanBy(offset);
 
-			this.fire('move');
+		this.fire('move');
 
-			clearTimeout(this._sizeTimer);
-			this._sizeTimer = setTimeout(L.Util.bind(this.fire, this, 'moveend'), 200);
-		}
+		clearTimeout(this._sizeTimer);
+		this._sizeTimer = setTimeout(L.Util.bind(this.fire, this, 'moveend'), 200);
+
 		return this;
 	},
 
@@ -3516,7 +3513,11 @@ L.FeatureGroup = L.LayerGroup.extend({
 
 		L.LayerGroup.prototype.removeLayer.call(this, layer);
 
-		return this.invoke('unbindPopup');
+		if (this._popupContent) {
+			return this.invoke('unbindPopup');
+		} else {
+			return this;
+		}
 	},
 
 	bindPopup: function (content) {
@@ -6928,16 +6929,35 @@ L.Control.Layers = L.Control.extend({
 		this._separator.style.display = (overlaysPresent && baseLayersPresent ? '' : 'none');
 	},
 
-	_addItem: function (obj, onclick) {
-		var label = document.createElement('label');
+	// IE7 bugs out if you create a radio dynamically, so you have to do it this hacky way (see http://bit.ly/PqYLBe)
+	_createRadioElement: function (name, checked) {
 
-		var input = document.createElement('input');
-		if (!obj.overlay) {
-			input.name = 'leaflet-base-layers';
+		var radioHtml = '<input type="radio" name="' + name + '"';
+		if (checked) {
+			radioHtml += ' checked="checked"';
 		}
-		input.type = obj.overlay ? 'checkbox' : 'radio';
+		radioHtml += '/>';
+
+		var radioFragment = document.createElement('div');
+		radioFragment.innerHTML = radioHtml;
+
+		return radioFragment.firstChild;
+	},
+
+	_addItem: function (obj) {
+		var label = document.createElement('label'),
+		    input,
+		    checked = this._map.hasLayer(obj.layer);
+
+		if (obj.overlay) {
+			input = document.createElement('input');
+			input.type = 'checkbox';
+			input.defaultChecked = checked;
+		} else {
+			input = this._createRadioElement('leaflet-base-layers', checked);
+		}
+
 		input.layerId = L.Util.stamp(obj.layer);
-		input.defaultChecked = this._map.hasLayer(obj.layer);
 
 		L.DomEvent.on(input, 'click', this._onInputClick, this);
 
