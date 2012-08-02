@@ -44,6 +44,7 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	var $pi_checkCHash = true;
 	
 	var $js = '';
+	var $layerGroups = array();
 	var $flexValues = array();
 	
 	
@@ -95,11 +96,11 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 				$this->pi_classParam('map'));
 		
 		
-		$content .= '<script src="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.js"></script>';
+		$content .= '<script type="text/javascript" src="'.$GLOBALS["TSFE"]->absRefPrefix.'typo3conf/ext/leaflet_maps/dist/leaflet.js"></script>';
 		//$content .= '<script src="http://cdn.leafletjs.com/leaflet-0.4/leaflet.js"></script>';
 	
 		
-		$this->buildLayerGroup();
+		$this->buildLayerGroups();
 		$this->buildLayersControl();
 		
 		$content .= $this->addJavaScript();
@@ -164,7 +165,7 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 						cmUrl = 'http://{s}.tile.cloudmade.com/".$this->extConf['api_key']."/{styleId}/256/{z}/{x}/{y}.png';
 					";
 		
-		
+		// http://leaflet.cloudmade.com/reference.html#tilelayer
 		$this->js .= "
 					var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
 						midnight  = L.tileLayer(cmUrl, {styleId: 999,   attribution: cmAttr}),
@@ -203,16 +204,40 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	 * 
 	 * @link http://leaflet.cloudmade.com/reference.html#layergroup API
 	 */
-	function buildLayerGroup() {
+	function buildLayerGroups() {
 		
-		$markers=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_leafletmaps_markers','1=1 '.$this->cObj->enableFields('tx_leafletmaps_markers'));
 		
-		foreach ($markers as $key => $value) {
-			fb($value,__LINE__.': $value');
-			
-			
-			
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+				'title,marker,maplayer',
+				'tx_leafletmaps_layergroups',
+				'1=1 '.$this->cObj->enableFields('tx_leafletmaps_layergroups'),
+				$groupBy='',
+				$orderBy='',
+				$limit='');
+		
+		if ($res) {
+			$num = $GLOBALS ['TYPO3_DB']->sql_num_rows($res);
+
+			if($num>0) {
+				$tempRow = array();
+				$i = 1;
+				while ($tempRow = $GLOBALS ['TYPO3_DB']->sql_fetch_assoc($res)) {
+					
+					// Valid JavaScript variable name
+					$jsVarName = t3lib_div::shortMD5($tempRow['title'], 6);
+					
+					$this->layerGroups[$jsVarName] = $tempRow;
+					
+					$markers = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('longitude,latitude,popuptext','tx_leafletmaps_markers','uid IN('.$tempRow['marker'].') '.$this->cObj->enableFields('tx_leafletmaps_markers'));
+					$this->layerGroups[$jsVarName]['marker'] = $markers;
+				}
+			}
+			$GLOBALS ['TYPO3_DB']->sql_free_result($res);
 		}
+		
+		
+		fb($this->layerGroups,__LINE__.': $this->layerGroups');
+
 		
 		$this->js .= "
 					var cities = new L.LayerGroup();

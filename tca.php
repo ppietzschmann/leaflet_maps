@@ -18,18 +18,18 @@ $TCA['tx_leafletmaps_markers'] = array (
 				'default' => '0'
 			)
 		),
-		'longitude' => array (		
+		'latitude' => array (		
 			'exclude' => 1,		
-			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_markers.longitude',		
+			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_markers.latitude',		
 			'config' => array (
 				'type' => 'input',	
 				'size' => '30',	
 				'eval' => 'trim',
 			)
 		),
-		'latitude' => array (		
+		'longitude' => array (		
 			'exclude' => 1,		
-			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_markers.latitude',		
+			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_markers.longitude',		
 			'config' => array (
 				'type' => 'input',	
 				'size' => '30',	
@@ -47,7 +47,7 @@ $TCA['tx_leafletmaps_markers'] = array (
 		),
 	),
 	'types' => array (
-		'0' => array('showitem' => 'hidden;;1;;1-1-1, longitude, latitude, popuptext;;;richtext[]:rte_transform[mode=ts_css|imgpath=uploads/tx_leafletmaps/rte/]')
+		'0' => array('showitem' => 'hidden;;1;;1-1-1, latitude, longitude, popuptext;;;richtext[]:rte_transform[mode=ts_css|imgpath=uploads/tx_leafletmaps/rte/]')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => '')
@@ -59,7 +59,7 @@ $TCA['tx_leafletmaps_markers'] = array (
 $TCA['tx_leafletmaps_layergroups'] = array (
 	'ctrl' => $TCA['tx_leafletmaps_layergroups']['ctrl'],
 	'interface' => array (
-		'showRecordFieldList' => 'hidden,starttime,endtime,title,marker'
+		'showRecordFieldList' => 'hidden,starttime,endtime,title,marker,maplayer'
 	),
 	'feInterface' => $TCA['tx_leafletmaps_layergroups']['feInterface'],
 	'columns' => array (
@@ -120,9 +120,17 @@ $TCA['tx_leafletmaps_layergroups'] = array (
 				'maxitems' => 100,
 			)
 		),
+        'maplayer' => array (        
+            'exclude' => 1,        
+            'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_layergroups.maplayer',        
+            'config' => array (
+                'type' => 'check',
+                'default' => 1,
+            )
+        ),
 	),
 	'types' => array (
-		'0' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, marker;;;;3-3-3')
+		'0' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, marker;;;;3-3-3, maplayer')
 	),
 	'palettes' => array (
 		'1' => array('showitem' => 'starttime, endtime')

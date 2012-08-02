@@ -34,6 +34,7 @@ CREATE TABLE tx_leafletmaps_layergroups (
 	endtime int(11) DEFAULT '0' NOT NULL,
 	title varchar(255) DEFAULT '' NOT NULL,
 	marker text,
+	maplayer tinyint(3) DEFAULT '1' NOT NULL,
 	
 	PRIMARY KEY (uid),
 	KEY parent (pid)

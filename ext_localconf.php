@@ -22,5 +22,9 @@ RTE.config.tx_leafletmaps_markers.popuptext {
 }
 ');
 
+t3lib_extMgm::addUserTSConfig('
+    options.saveDocNew.tx_leafletmaps_layergroups=1
+');
+
 t3lib_extMgm::addPItoST43($_EXTKEY, 'pi1/class.tx_leafletmaps_pi1.php', '_pi1', 'list_type', 1);
 ?>
