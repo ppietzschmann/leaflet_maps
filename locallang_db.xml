@@ -53,10 +53,13 @@
 			
 		</languageKey>
 		<languageKey index="de" type="array">
-			<label index="tx_leafletmaps_markers.longitude">longitude</label>
-			<label index="tx_leafletmaps_markers.latitude">latitude</label>
-			<label index="tx_leafletmaps_markers.popuptext">popuptext</label>
-			<label index="tt_content.list_type_pi1">Show leaflet map</label>
+            <label index="tx_leafletmaps_markers.longitude">longitude</label>
+            <label index="tx_leafletmaps_markers.latitude">longitude</label>
+            <label index="tx_leafletmaps_markers.popuptext">popuptext</label>
+            <label index="tx_leafletmaps_layergroups">LayerGroup</label>
+            <label index="tx_leafletmaps_layergroups.title">title</label>
+            <label index="tx_leafletmaps_layergroups.marker">marker</label>
+            <label index="tt_content.list_type_pi1">Show leaflet map</label>
 		</languageKey>
 	</data>
 </T3locallang>

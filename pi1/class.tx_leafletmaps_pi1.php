@@ -137,8 +137,8 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 		$this->js .= sprintf("
 							var map = L.map('%s%d', {
 								center: [%s],
-								zoom: %d,
-								layers: [minimal, motorways, cities]
+								zoom: %d
+								//,layers: [minimal, motorways, cities]
 							});
 							",
 				
@@ -198,7 +198,11 @@ class tx_leafletmaps_pi1 extends tslib_pibase {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * 
+	 * @link http://leaflet.cloudmade.com/reference.html#layergroup API
+	 */
 	function buildLayerGroup() {
 		
 		$markers=$GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_leafletmaps_markers','1=1 '.$this->cObj->enableFields('tx_leafletmaps_markers'));

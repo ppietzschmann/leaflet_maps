@@ -53,4 +53,79 @@ $TCA['tx_leafletmaps_markers'] = array (
 		'1' => array('showitem' => '')
 	)
 );
+
+
+
+$TCA['tx_leafletmaps_layergroups'] = array (
+	'ctrl' => $TCA['tx_leafletmaps_layergroups']['ctrl'],
+	'interface' => array (
+		'showRecordFieldList' => 'hidden,starttime,endtime,title,marker'
+	),
+	'feInterface' => $TCA['tx_leafletmaps_layergroups']['feInterface'],
+	'columns' => array (
+		'hidden' => array (		
+			'exclude' => 1,
+			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+			'config'  => array (
+				'type'    => 'check',
+				'default' => '0'
+			)
+		),
+		'starttime' => array (		
+			'exclude' => 1,
+			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.starttime',
+			'config'  => array (
+				'type'     => 'input',
+				'size'     => '8',
+				'max'      => '20',
+				'eval'     => 'date',
+				'default'  => '0',
+				'checkbox' => '0'
+			)
+		),
+		'endtime' => array (		
+			'exclude' => 1,
+			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.endtime',
+			'config'  => array (
+				'type'     => 'input',
+				'size'     => '8',
+				'max'      => '20',
+				'eval'     => 'date',
+				'checkbox' => '0',
+				'default'  => '0',
+				'range'    => array (
+					'upper' => mktime(3, 14, 7, 1, 19, 2038),
+					'lower' => mktime(0, 0, 0, date('m')-1, date('d'), date('Y'))
+				)
+			)
+		),
+		'title' => array (		
+			'exclude' => 1,		
+			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_layergroups.title',		
+			'config' => array (
+				'type' => 'input',	
+				'size' => '30',	
+				'eval' => 'required,trim',
+			)
+		),
+		'marker' => array (		
+			'exclude' => 1,		
+			'label' => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_layergroups.marker',		
+			'config' => array (
+				'type' => 'group',	
+				'internal_type' => 'db',	
+				'allowed' => 'tx_leafletmaps_markers',	
+				'size' => 10,	
+				'minitems' => 0,
+				'maxitems' => 100,
+			)
+		),
+	),
+	'types' => array (
+		'0' => array('showitem' => 'hidden;;1;;1-1-1, title;;;;2-2-2, marker;;;;3-3-3')
+	),
+	'palettes' => array (
+		'1' => array('showitem' => 'starttime, endtime')
+	)
+);
 ?>

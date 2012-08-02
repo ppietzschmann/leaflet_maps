@@ -8,7 +8,7 @@ t3lib_extMgm::addToInsertRecords('tx_leafletmaps_markers');
 $TCA['tx_leafletmaps_markers'] = array (
 	'ctrl' => array (
 		'title'     => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_markers',		
-		'label'     => 'uid',	
+		'label'     => 'popuptext',	
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
 		'cruser_id' => 'cruser_id',
@@ -22,6 +22,26 @@ $TCA['tx_leafletmaps_markers'] = array (
 	),
 );
 
+t3lib_extMgm::addToInsertRecords('tx_leafletmaps_layergroups');
+
+$TCA['tx_leafletmaps_layergroups'] = array (
+    'ctrl' => array (
+        'title'     => 'LLL:EXT:leaflet_maps/locallang_db.xml:tx_leafletmaps_layergroups',        
+        'label'     => 'title',    
+        'tstamp'    => 'tstamp',
+        'crdate'    => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'default_sortby' => 'ORDER BY crdate',    
+        'delete' => 'deleted',    
+        'enablecolumns' => array (        
+            'disabled' => 'hidden',    
+            'starttime' => 'starttime',    
+            'endtime' => 'endtime',
+        ),
+        'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca.php',
+        'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'icon_tx_leafletmaps_layergroups.gif',
+    ),
+);
 
 t3lib_div::loadTCA('tt_content');
 $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='layout,select_key,pages,recursive';
